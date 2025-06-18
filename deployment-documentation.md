@@ -119,7 +119,24 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 ```
+or when using app=create_app in app/__init__.py
+```ini
+[Unit]
+Description=Gunicorn instance to serve myflaskapp
+After=network.target
 
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/ai
+Environment="PATH=/var/www/ai/venv/bin"
+ExecStart=/var/www/ai/venv/bin/gunicorn --workers 3 --bind unix:/var/www/ai/ai.sock 'app:create_app()'
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
 ### 4.3 Start and enable the service
 
 ```bash
