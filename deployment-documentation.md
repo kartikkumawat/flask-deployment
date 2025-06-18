@@ -119,7 +119,7 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 ```
-or when using app=create_app in app/__init__.py
+or when using **app=create_app** in **app/__init__.py**
 ```ini
 [Unit]
 Description=Gunicorn instance to serve myflaskapp
@@ -137,6 +137,31 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 ```
+With logs of gunicorn
+```ini
+[Unit]
+Description=Gunicorn instance to serve flaskappai
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/ai
+Environment="PATH=/var/www/ai/venv/bin"
+ExecStart=/var/www/ai/venv/bin/gunicorn \
+  --workers 3 \
+  --bind unix:/var/www/ai/ai.sock \
+  --log-level debug \
+  --error-logfile /var/log/gunicorn/error.log \
+  --access-logfile /var/log/gunicorn/access.log \
+  'app:create_app()'
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
 ### 4.3 Start and enable the service
 
 ```bash
